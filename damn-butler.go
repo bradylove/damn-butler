@@ -11,8 +11,9 @@ var (
 
 	allCmd = app.Command("all", "Show the status for all available projects")
 
-	filterCmd = app.Command("filter", "Show the status for projects whose names start with given string")
-	filterStr = filterCmd.Arg("filter", "String to filter projects by").Required().String()
+	filterCmd   = app.Command("filter", "Show the status for projects whose names start with given string")
+	filterStr   = filterCmd.Arg("filter", "String to filter projects by").Required().String()
+	filterWatch = filterCmd.Flag("watch", "Continue to watch projects").Short('w').Bool()
 
 	hostCmd     = app.Command("host", "Host operations")
 	hostAddCmd  = hostCmd.Command("add", "Adds a new Jenkins host to monitor")
@@ -29,15 +30,23 @@ func main() {
 		panic(err)
 	}
 
-	results, _ := FetchAllResults(config.Hosts)
-
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
 	case allCmd.FullCommand():
 		RequireHost()
+
+		results, _ := FetchAllResults(config.Hosts)
 		results.ShowAll()
 	case filterCmd.FullCommand():
 		RequireHost()
-		results.ShowFiltered(*filterStr)
+
+		for {
+			results, _ := FetchAllResults(config.Hosts)
+			results.ShowFiltered(*filterStr, *filterWatch)
+
+			if !*filterWatch {
+				break
+			}
+		}
 	case hostAddCmd.FullCommand():
 		config.AddHost(*hostAddStr)
 	case hostListCmd.FullCommand():

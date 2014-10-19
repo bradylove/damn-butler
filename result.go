@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/xml"
+	"fmt"
 	"regexp"
+	"time"
 )
 
 type Result struct {
@@ -16,13 +18,28 @@ func (r *Result) ShowAll() {
 	}
 }
 
-func (r *Result) ShowFiltered(filter string) {
+func (r *Result) ShowFiltered(filter string, watch bool) {
 	exp := regexp.MustCompile(filter)
+
+	i := 0
 
 	for _, p := range r.Projects {
 		if exp.MatchString(p.Name) {
-			p.PrintMinimal()
+			i += p.PrintMinimal()
 		}
 	}
 
+	if !watch {
+		return
+	}
+
+	time.Sleep(time.Second * 5)
+
+	Backspace(i)
+}
+
+func Backspace(n int) {
+	for i := 0; i < n; i++ {
+		fmt.Print("\b")
+	}
 }
