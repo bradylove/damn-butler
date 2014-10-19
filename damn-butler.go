@@ -16,7 +16,7 @@ var (
 
 	hostCmd     = app.Command("host", "Host operations")
 	hostAddCmd  = hostCmd.Command("add", "Adds a new Jenkins host to monitor")
-	hostAddStr  = hostAddCmd.Arg("cc", "The URL to the Jenkins CC file used for monitoring projects").Required().String()
+	hostAddStr  = hostAddCmd.Arg("URL to cc file", "The URL to the Jenkins CC file used for monitoring projects").Required().String()
 	hostListCmd = hostCmd.Command("list", "Lists all Jenkins hosts that are being monitored")
 
 	config *Config
