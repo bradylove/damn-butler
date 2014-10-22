@@ -21,16 +21,14 @@ type Project struct {
 	Activity      string `xml:"activity,attr"`
 }
 
-func (p *Project) PrintMinimal() int {
+func (p *Project) PrintMinimal() {
 	output := p.StatusText() + " " + p.Name
 
-	for len(output) != (goterm.Width() + 11) {
-		output += " "
-	}
+	fmt.Println(output)
+}
 
-	fmt.Print(output)
-
-	return len(output)
+func (p *Project) DisplayText() string {
+	return p.StatusText() + " " + p.Name
 }
 
 func (p *Project) StatusText() string {

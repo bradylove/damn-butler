@@ -2,9 +2,7 @@ package main
 
 import (
 	"encoding/xml"
-	"fmt"
 	"regexp"
-	"time"
 )
 
 type Result struct {
@@ -12,34 +10,32 @@ type Result struct {
 	Projects []Project `xml:"Project"`
 }
 
-func (r *Result) ShowAll() {
+func (r *Result) ShowAll() []string {
+	list := make([]string, 0)
+
 	for _, p := range r.Projects {
-		p.PrintMinimal()
+		list = append(list, p.DisplayText())
 	}
+
+	return list
 }
 
-func (r *Result) ShowFiltered(filter string, watch bool) {
-	exp := regexp.MustCompile(filter)
+func (r *Result) GetAll() []string {
+	list := make([]string, 0)
 
-	i := 0
+	for _, p := range r.Projects {
+		list = append(list, p.DisplayText())
+	}
+
+	return list
+}
+
+func (r *Result) ShowFiltered(filter string) {
+	exp := regexp.MustCompile(filter)
 
 	for _, p := range r.Projects {
 		if exp.MatchString(p.Name) {
-			i += p.PrintMinimal()
+			p.PrintMinimal()
 		}
-	}
-
-	if !watch {
-		return
-	}
-
-	time.Sleep(time.Second * 5)
-
-	Backspace(i)
-}
-
-func Backspace(n int) {
-	for i := 0; i < n; i++ {
-		fmt.Print("\b")
 	}
 }
