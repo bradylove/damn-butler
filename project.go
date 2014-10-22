@@ -24,11 +24,7 @@ type Project struct {
 func (p *Project) PrintMinimal() int {
 	output := p.StatusText() + " " + p.Name
 
-	for len(output) != (goterm.Width() + 11) {
-		output += " "
-	}
-
-	fmt.Print(output)
+	fmt.Println(output)
 
 	return len(output)
 }
